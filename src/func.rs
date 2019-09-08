@@ -3,11 +3,18 @@ fn main() {
     calc = square;
     let calculated = calc(5); 
     println!("{}", calculated);
-
-    let result = if calculated == 5*5 { "true" } else { "false" };
-    println!("if_result is {}", result);
 }
 
 fn square(x: i32) -> i32 {
     x * x
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn square_works() {
+        assert_eq!(square(5), 25);
+    }
 }
