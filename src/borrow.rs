@@ -12,6 +12,6 @@ fn use_copy(num: i32) {
     println!("num is {}", num);
 }
 
-fn use_ref(num: Vec<i32>) {
-    println!("num is {}", num[0]);
+fn use_ref(nums: Vec<i32>) {
+    println!("num is {}", nums[0]);
 }
