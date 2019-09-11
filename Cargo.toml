@@ -15,3 +15,7 @@ path = "src/func.rs"
 [[bin]]
 name = "borrow"
 path = "src/borrow.rs"
+
+[[bin]]
+name = "trait"
+path = "src/trait.rs"
