@@ -5,7 +5,7 @@ fn main() {
     let comment_pattern = r"//.*";
     let num_pattern = r"(?P<num>[0-9]+)";
     let id_pattern = r"(?P<id>[A-Z_a-z][A-Z_a-z0-9]*|==|<=|>=|&&|\|\||\p{Punct})";
-    let str_pattern = r#"("|\\|\n|[^"])*"#;
+    let str_pattern = "\"(\\n|[^\"])*";
 
     let set = RegexSet::new(&[
         emp_pattern, // 0
