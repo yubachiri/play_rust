@@ -19,13 +19,13 @@ fn main() {
     let target_str = "sample";
 
     let num_matches: Vec<_> = set.matches(&target_num).into_iter().collect();
-    assert_eq!(num_matches, vec![0, 2, 3]);
+    assert_eq!(num_matches, vec![0, 2]);
     let re1 = Regex::new(num_pattern).unwrap();
     let cap_num = re1.captures(&target_num).unwrap();
     assert_eq!("12345", &cap_num["num"]);
 
     let str_matches: Vec<_> = set.matches(&target_str).into_iter().collect();
-    assert_eq!(str_matches, vec![0, 3, 4]);
+    assert_eq!(str_matches, vec![0, 4]);
     let re2 = Regex::new(str_pattern).unwrap();
     let cap_str = re2.captures(&target_str).unwrap();
     assert_eq!("sample", &cap_str[0]);
