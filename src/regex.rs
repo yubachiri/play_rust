@@ -7,6 +7,7 @@ fn main() {
     let id_pattern = r"(?P<id>[A-Z_a-z][A-Z_a-z0-9]*|==|<=|>=|&&|\|\||\p{Punct})";
     // 文字列リテラルの条件
     // 「"」から始まり、expressionがあって、「"」で終わるもの
+    // expression: \" もしくは \\ もしくは \n もしくは "以外
     let str_pattern = r#"(\\"|\\|\n|[^"])*"#;
 
     let set = RegexSet::new(&[
