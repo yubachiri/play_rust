@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 regex = "1"
+combine = "3.8.1"
 
 [[bin]]
 name = "func"
@@ -24,3 +25,7 @@ path = "src/trait.rs"
 [[bin]]
 name = "regex"
 path = "src/regex.rs"
+
+[[bin]]
+name = "combine"
+path = "src/combine.rs"
