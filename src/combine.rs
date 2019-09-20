@@ -1,8 +1,8 @@
- use combine::parser::range::{range, take_while1};
- use combine::parser::repeat::{sep_by};
- use combine::parser::Parser;
- use combine::stream::{RangeStream, state::State};
- use combine::error::ParseError;
+use combine::parser::range::{range, take_while1};
+use combine::parser::repeat::{sep_by};
+use combine::parser::Parser;
+use combine::stream::{RangeStream, state::State};
+use combine::error::ParseError;
  
 // Copy the fn header as is, only change ------------╮
 //                                                   v
