@@ -10,7 +10,7 @@ fn tools<'a, I>() -> impl Parser<Input = I, Output = Vec<&'a str>>
     where I: RangeStream<Item = char, Range=&'a str>,
           I::Error: ParseError<I::Item, I::Range, I::Position>,
 {
-    let tool = take_while1(|c : char| c.is_alphabetic());
+    let tool = take_while1(|c : char| c.is_digit(10));
     sep_by(tool, range(", "))
 }
 
@@ -22,7 +22,8 @@ fn decode(input : &str) -> Result<Vec<&str>, String> {
 }
 
 fn main() {
-    let input = "Hammer, Saw, Drill";
+    let input = "10Hammer, 123, Drill1";
+    // let input = "Hammer, Saw, Drill";
     let output = decode(input).unwrap();
     println!("{:?}", output);
 }
