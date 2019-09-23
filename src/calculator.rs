@@ -2,30 +2,21 @@ extern crate combine;
 extern crate combine_language;
 
 use combine::char::{string, letter, alpha_num};
-use combine::{Parser, satisfy, Stream, ParseResult, parser, chainl1};
+use combine::{Parser, satisfy, Stream, ParseResult, ParseError, parser, chainl1};
 use combine_language::{LanguageEnv, LanguageDef, Identifier};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-enum Expr {
-    Number(i64),
-    Plus(Box<Expr>, Box<Expr>),
-    Minus(Box<Expr>, Box<Expr>),
-    Times(Box<Expr>, Box<Expr>),
-    Divides(Box<Expr>, Box<Expr>),
-}
-
-fn calc_env<'a, I>() -> LanguageEnv<'a, I> 
-where
-    I: Stream<Item=char>, I: 'a,
-    <I as combine::StreamOnce>::Error: combine::ParseError<char, <I as combine::StreamOnce>::Range, <I as combine::StreamOnce>::Position>
+fn calc_env<'a, I: 'a>() -> LanguageEnv<'a, I> 
+    where
+        I: Stream<Item = char>,
+        I::Error: ParseError<I::Item, I::Range, I::Position>,  
 {
     LanguageEnv::new(LanguageDef {
         ident: Identifier {
             start: letter(),
             rest: alpha_num(),
             reserved: ["if", "then", "else", "let", "in", "type"].iter()
-                                                                 .map(|x| (*x).into())
-                                                                 .collect(),
+                                                                .map(|x| (*x).into())
+                                                                .collect(),
         },
         op: Identifier {
             start: satisfy(|c| "+-*/".chars().any(|x| x == c)),
@@ -38,57 +29,10 @@ where
     })
 }
 
-// 整数または括弧で括られた式
-fn factor<I>(input: I) -> ParseResult<Box<Expr>, I>
-where
-    I: Stream<Item=char>,
-    <I as combine::StreamOnce>::Error: combine::ParseError<char, <I as combine::StreamOnce>::Range, <I as combine::StreamOnce>::Position>
-{
-    let env = calc_env();
-    let number = env.integer().map(|x| Box::new(Expr::Number(x)));
-    let parenthesized = env.parens(parser(expr));
-    number.or(parenthesized).parse_stream(input)
-}
-
-// 掛け算・割り算またはfactor
-fn term<I>(input: I) -> ParseResult<Box<Expr>, I> 
-where
-    I: Stream<Item=char>,
-    <I as combine::StreamOnce>::Error: combine::ParseError<char, <I as combine::StreamOnce>::Range, <I as combine::StreamOnce>::Position>  
-{
-    let env = calc_env();
-    let op = env.reserved_op("*").or(env.reserved_op("/"))
-        .map(|op| move |lhs, rhs| {
-        if op == "*" {
-            Box::new(Expr::Times(lhs, rhs))
-        } else if op == "/" {
-            Box::new(Expr::Divides(lhs, rhs))
-        } else { unreachable!() }
-    });
-    chainl1(parser(factor), op)
-        .parse_stream(input)
-}
-
-// 全ての式
-fn expr<I>(input: I) -> ParseResult<Box<Expr>, I> 
-where
-    I: Stream<Item=char>,
-    <I as combine::StreamOnce>::Error: combine::ParseError<char, <I as combine::StreamOnce>::Range, <I as combine::StreamOnce>::Position>
-{
-    let env = calc_env();
-    let op = env.reserved_op("+").or(env.reserved_op("-"))
-        .map(|op| move |lhs, rhs| {
-        if op == "+" {
-            Box::new(Expr::Plus(lhs, rhs))
-        } else if op == "-" {
-            Box::new(Expr::Minus(lhs, rhs))
-        } else { unreachable!() }
-    });
-    chainl1(parser(term), op)
-        .parse_stream(input)
-}
-
 fn main() {
-    let mut parser = parser(expr);
-    println!("{:?}", parser.parse("1 + 2 * 3"));
+    let env = calc_env();
+    let id = env.identifier();//An identifier parser
+    let integer = env.integer();//An integer parser
+    let result = (id, integer).easy_parse("this /* Skips comments */ 42");
+    assert_eq!(result, Ok(((String::from("this"), 42), "")));
 }
