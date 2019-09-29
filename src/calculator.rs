@@ -10,6 +10,7 @@ use self::Expr::*;
 #[derive(PartialEq, Debug)]
 enum Expr {
     Id(String),
+    Num(i64),
     Op(Box<Expr>, &'static str, Box<Expr>)
 }
 fn op(l: Expr, o: &'static str, r: Expr) -> Expr {
@@ -32,8 +33,11 @@ fn main(){
             (op, Assoc { precedence: prec, fixity: Fixity::Left })
         })
         .skip(spaces());
-    let term = many(digit())
+    let term = many(letter())
         .map(Id)
+        .skip(spaces());
+    let number = many(digit())
+        .map(Num)
         .skip(spaces());
     let mut parser = expression_parser(term, op_parser, op);
     let result = parser.parse("1 + 2");

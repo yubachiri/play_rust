@@ -34,3 +34,7 @@ path = "src/combine.rs"
 [[bin]]
 name = "calculator"
 path = "src/calculator.rs"
+
+[[bin]]
+name = "calculator_with_language_env"
+path = "src/calculator_with_language_env.rs"
